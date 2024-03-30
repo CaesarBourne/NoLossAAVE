@@ -3,7 +3,10 @@ pragma solidity ^0.8.0;
 
 contract AaveLottery {
     struct Round {
+        uint256 endTime;
         uint256 totalStake;
+        uint256 award;
+        address winner;
     }
     struct Ticket {
         uint256 stake;
@@ -12,6 +15,12 @@ contract AaveLottery {
     constructor(uint256 _roundDuration) {
         roundDuration = _roundDuration;
     }
+
+    function getRound(uint256 roundID) external view returns (Round memory) {}
+    function getTicket(
+        uint256 roundID,
+        address user
+    ) external view returns (Ticket memory) {}
     function enter(uint256 amount) external {
         //checks
         //updates
