@@ -12,15 +12,26 @@ contract AaveLottery {
         uint256 stake;
     }
     uint256 public roundDuration;
+
+    //roundId => Round
+    mapping(uint256 => Round) public rounds;
+
+    // roundID =>  userAddress => Ticket
+    mapping(uint256 => mapping(address => Ticket)) public tickets;
     constructor(uint256 _roundDuration) {
         roundDuration = _roundDuration;
     }
 
-    function getRound(uint256 roundID) external view returns (Round memory) {}
+    function getRound(uint256 roundID) external view returns (Round memory) {
+        return rounds[roundID];
+    }
+
     function getTicket(
         uint256 roundID,
         address user
-    ) external view returns (Ticket memory) {}
+    ) external view returns (Ticket memory) {
+        return tickets[roundID][user];
+    }
     function enter(uint256 amount) external {
         //checks
         //updates
