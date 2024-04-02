@@ -12,6 +12,7 @@ contract AaveLottery {
         uint256 stake;
     }
     uint256 public roundDuration;
+    uint256 public currentID; //current Round
 
     //roundId => Round
     mapping(uint256 => Round) public rounds;
@@ -50,5 +51,18 @@ contract AaveLottery {
         //checks
         //check user if real winner
         //Transfer jackpot
+    }
+
+    funtion _drawWinner() internal view returns (uint256){
+        uint256 random = uint256(
+            keccak256(
+                abi.encodePacked(
+                    block.timestamp,
+                    rounds[currentID].totalStake
+                    //totalstake
+                    //round
+                );
+            )
+        )
     }
 }
