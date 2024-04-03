@@ -53,7 +53,7 @@ contract AaveLottery {
         //Transfer jackpot
     }
 
-    funtion _drawWinner() internal view returns (uint256){
+    funtion _drawWinner(uint256 total) internal view returns (uint256){
         uint256 random = uint256(
             keccak256(
                 abi.encodePacked(
@@ -64,5 +64,6 @@ contract AaveLottery {
                 );
             )
         )
+        return random % total // [0, tot ]
     }
 }
