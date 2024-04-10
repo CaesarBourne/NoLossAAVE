@@ -6,6 +6,7 @@ contract AaveLottery {
         uint256 endTime;
         uint256 totalStake;
         uint256 award;
+        uint256 winnerTicket
         address winner;
     }
     struct Ticket {
@@ -36,6 +37,7 @@ contract AaveLottery {
     function enter(uint256 amount) external {
         //checks
         //updates
+        _updateState()
         //user enters
         //transfer funds from user to contract
         //deposit
@@ -43,6 +45,8 @@ contract AaveLottery {
     function exit(uint256 amount) external {
         //checks
         //updates
+        _updateState()
+
         //user exits
         //transfer funds out to user from contract
         //deposit
@@ -66,4 +70,15 @@ contract AaveLottery {
         )
         return random % total // [0, tot ]
     }
+    function _updateState () internal {
+        if (block.timestamp > rouns[currentID].endTime) {
+            //lottery drW
+                rounds[currentId].winnerTicket = _drawWinner(rounds[currentID].totalStake);
+                currentId =+= 1;
+                rounds[currentId].endTime = block.timestamp + roundDuration;
+        } else {
+            
+        }
+    }
 }
+
