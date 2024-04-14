@@ -6,7 +6,7 @@ contract AaveLottery {
         uint256 endTime;
         uint256 totalStake;
         uint256 award;
-        uint256 winnerTicket
+        uint256 winnerTicket;
         address winner;
     }
     struct Ticket {
@@ -22,6 +22,9 @@ contract AaveLottery {
     mapping(uint256 => mapping(address => Ticket)) public tickets;
     constructor(uint256 _roundDuration) {
         roundDuration = _roundDuration;
+        //in the first round
+        rounds[currentId] = Round(block.timestamp + _roundDuration,
+        0,0,0,address(0));
     }
 
     function getRound(uint256 roundID) external view returns (Round memory) {
