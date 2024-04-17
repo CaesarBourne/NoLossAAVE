@@ -23,8 +23,13 @@ contract AaveLottery {
     constructor(uint256 _roundDuration) {
         roundDuration = _roundDuration;
         //in the first round
-        rounds[currentId] = Round(block.timestamp + _roundDuration,
-        0,0,0,address(0));
+        rounds[currentId] = Round(
+            block.timestamp + _roundDuration,
+            0,
+            0,
+            0,
+            address(0)
+        );
     }
 
     function getRound(uint256 roundID) external view returns (Round memory) {
@@ -39,8 +44,12 @@ contract AaveLottery {
     }
     function enter(uint256 amount) external {
         //checks
+        require(
+            tickets[currentID][msg.sender].stake == 0,
+            "USER IS ALREADY A PARTICIPANT"
+        );
         //updates
-        _updateState()
+        _updateState();
         //user enters
         //transfer funds from user to contract
         //deposit
@@ -48,7 +57,7 @@ contract AaveLottery {
     function exit(uint256 amount) external {
         //checks
         //updates
-        _updateState()
+        _updateState();
 
         //user exits
         //transfer funds out to user from contract
@@ -60,7 +69,7 @@ contract AaveLottery {
         //Transfer jackpot
     }
 
-    funtion _drawWinner(uint256 total) internal view returns (uint256){
+    function _drawWinner(uint256 total) internal view returns (uint256) {
         uint256 random = uint256(
             keccak256(
                 abi.encodePacked(
@@ -68,20 +77,19 @@ contract AaveLottery {
                     rounds[currentID].totalStake
                     //totalstake
                     //round
-                );
+                )
             )
-        )
-        return random % total // [0, tot ]
+        );
+        return random % total; // [0, tot ]
     }
-    function _updateState () internal {
+    function _updateState() internal {
         if (block.timestamp > rouns[currentID].endTime) {
             //lottery drW
-                rounds[currentId].winnerTicket = _drawWinner(rounds[currentID].totalStake);
-                currentId =+= 1;
-                rounds[currentId].endTime = block.timestamp + roundDuration;
-        } else {
-            
-        }
+            rounds[currentId].winnerTicket = _drawWinner(
+                rounds[currentID].totalStake
+            );
+            currentId += 1;
+            rounds[currentId].endTime = block.timestamp + roundDuration;
+        } else {}
     }
 }
-
