@@ -54,12 +54,15 @@ contract AaveLottery {
         //transfer funds from user to contract
         //deposit
     }
-    function exit(uint256 amount) external {
+    function exit(uint256 roundID) external {
         //checks
         //updates
         _updateState();
+        require(roundID < currentID, "CURRENT_LOTTERY");
 
         //user exits
+        uint256 amount = tickets[roundID][msg.sender].stake;
+        rounds[roundID].totalStake -= amount;
         //transfer funds out to user from contract
         //deposit
     }
