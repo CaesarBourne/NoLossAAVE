@@ -86,13 +86,31 @@ contract AaveLottery {
         return random % total; // [0, tot ]
     }
     function _updateState() internal {
-        if (block.timestamp > rouns[currentID].endTime) {
-            //lottery drW
-            rounds[currentId].winnerTicket = _drawWinner(
+        if (block.timestamp > rounds[currentID].endTime) {
+            // award - aave withdraw
+            // scaledBalance * index = total amount of aTokens
+            uint256 index = aave.getReserveNormalizedIncome(
+                address(underlying)
+            );
+            uint256 aTokenBalance = rounds[currentID].scaledBalanceStake.rayMul(
+                index
+            );
+            uint256 aaveAmount = aave.withdraw(
+                address(underlying),
+                aTokenBalance,
+                address(this)
+            );
+            // aaveAmount = principal + interest
+            rounds[currentID].award = aaveAmount - rounds[currentID].totalStake;
+
+            // Lottery draw
+            rounds[currentID].winnerTicket = _drawWinner(
                 rounds[currentID].totalStake
             );
-            currentId += 1;
-            rounds[currentId].endTime = block.timestamp + roundDuration;
-        } else {}
+
+            // create a new round
+            currentID += 1;
+            rounds[currentID].endTime = block.timestamp + roundDuration;
+        }
     }
 }
