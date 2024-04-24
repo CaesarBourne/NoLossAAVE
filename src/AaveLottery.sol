@@ -37,11 +37,12 @@ contract AaveLottery {
     }
 
     function getTicket(
-        uint256 roundID,
+        uint256 roundId,
         address user
     ) external view returns (Ticket memory) {
-        return tickets[roundID][user];
+        return tickets[roundId][user];
     }
+
     function enter(uint256 amount) external {
         //checks
         require(
