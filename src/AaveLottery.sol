@@ -44,17 +44,32 @@ contract AaveLottery {
     }
 
     function enter(uint256 amount) external {
-        //checks
+        // Checks
         require(
-            tickets[currentID][msg.sender].stake == 0,
-            "USER IS ALREADY A PARTICIPANT"
+            tickets[currentId][msg.sender].stake == 0,
+            "USER_ALREADY_PARTICIPANT"
         );
-        //updates
+        // Update
         _updateState();
-        //user enters
-        //transfer funds from user to contract
-        //deposit
+        // User enters
+        // [totalStake, totalStake + amount)
+        tickets[currentId][msg.sender].segmentStart = rounds[currentId]
+            .totalStake;
+        tickets[currentId][msg.sender].stake = amount;
+        rounds[currentId].totalStake += amount;
+        // Transfer funds in - user must approve this contract
+        underlying.safeTransferFrom(msg.sender, address(this), amount);
+        // Deposit funds into Aave Pool
+        uint256 scaledBalanceStakeBefore = aToken.scaledBalanceOf(
+            address(this)
+        );
+        aave.deposit(address(underlying), amount, address(this), 0);
+        uint256 scaledBalanceStakeAfter = aToken.scaledBalanceOf(address(this));
+        rounds[currentId].scaledBalanceStake +=
+            scaledBalanceStakeAfter -
+            scaledBalanceStakeBefore;
     }
+
     function exit(uint256 roundID) external {
         //checks
         //updates
