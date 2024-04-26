@@ -14,6 +14,7 @@ contract AaveLottery {
     }
     uint256 public roundDuration;
     uint256 public currentID; //current Round
+    IERC20 public underlying; // asset
 
     //roundId => Round
     mapping(uint256 => Round) public rounds;
