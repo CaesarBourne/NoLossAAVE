@@ -71,17 +71,18 @@ contract AaveLottery {
             scaledBalanceStakeBefore;
     }
 
-    function exit(uint256 roundID) external {
-        //checks
-        //updates
+    function exit(uint256 roundId) external {
+        // Checks
+        require(tickets[roundId][msg.sender].exited == false, "ALREADY_EXITED");
+        // Update
         _updateState();
-        require(roundID < currentID, "CURRENT_LOTTERY");
-
-        //user exits
-        uint256 amount = tickets[roundID][msg.sender].stake;
-        rounds[roundID].totalStake -= amount;
-        //transfer funds out to user from contract
-        //deposit
+        require(roundId < currentId, "CURRENT_LOTTERY");
+        // User exits
+        uint256 amount = tickets[roundId][msg.sender].stake;
+        tickets[roundId][msg.sender].exited = true;
+        rounds[roundId].totalStake -= amount;
+        // Transfer funds out
+        underlying.safeTransfer(msg.sender, amount);
     }
     function claim(uint256 amount) external {
         //checks
