@@ -84,12 +84,28 @@ contract AaveLottery {
         // Transfer funds out
         underlying.safeTransfer(msg.sender, amount);
     }
-    function claim(uint256 amount) external {
-        //checks
-        //check user if real winner
-        //Transfer jackpot
+    function claim(uint256 roundId) external {
+        // Checks
+        require(roundId < currentId, "CURRENT_LOTTERY");
+        Ticket memory ticket = tickets[roundId][msg.sender];
+        Round memory round = rounds[roundId];
+        // Check winner
+        // round.winnerTicket belongs to [ticket.segmentStart, ticket.segmentStart + ticket.stake)
+        // <=>
+        // ticket.segmentStart <= round.winnerTicket < ticket.segmentStart + ticket.stake
+        // <=>
+        // 0 <= round.winnerTicket - ticket.segmentStart < ticket.stake
+        // <=>
+        // round.winnerTicket - ticket.segmentStart < ticket.stake
+        require(
+            round.winnerTicket - ticket.segmentStart < ticket.stake,
+            "NOT_WINNER"
+        );
+        require(round.winner == address(0), "ALREADY_CLAIMED");
+        round.winner = msg.sender;
+        // Transfer jackpot
+        underlying.safeTransfer(msg.sender, round.award);
     }
-
     function _drawWinner(uint256 total) internal view returns (uint256) {
         uint256 random = uint256(
             keccak256(
