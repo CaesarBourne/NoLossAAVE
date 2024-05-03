@@ -120,13 +120,13 @@ contract AaveLottery {
         return random % total; // [0, tot ]
     }
     function _updateState() internal {
-        if (block.timestamp > rounds[currentID].endTime) {
+        if (block.timestamp > rounds[currentId].endTime) {
             // award - aave withdraw
             // scaledBalance * index = total amount of aTokens
             uint256 index = aave.getReserveNormalizedIncome(
                 address(underlying)
             );
-            uint256 aTokenBalance = rounds[currentID].scaledBalanceStake.rayMul(
+            uint256 aTokenBalance = rounds[currentId].scaledBalanceStake.rayMul(
                 index
             );
             uint256 aaveAmount = aave.withdraw(
@@ -135,16 +135,16 @@ contract AaveLottery {
                 address(this)
             );
             // aaveAmount = principal + interest
-            rounds[currentID].award = aaveAmount - rounds[currentID].totalStake;
+            rounds[currentId].award = aaveAmount - rounds[currentId].totalStake;
 
             // Lottery draw
-            rounds[currentID].winnerTicket = _drawWinner(
-                rounds[currentID].totalStake
+            rounds[currentId].winnerTicket = _drawWinner(
+                rounds[currentId].totalStake
             );
 
             // create a new round
-            currentID += 1;
-            rounds[currentID].endTime = block.timestamp + roundDuration;
+            currentId += 1;
+            rounds[currentId].endTime = block.timestamp + roundDuration;
         }
     }
 }
